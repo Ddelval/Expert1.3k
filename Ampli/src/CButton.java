@@ -25,6 +25,7 @@ public class CButton  extends JButton{
 	private int nelements;
 	private String[] titles;
 	private Color[] backgrounds;
+	private boolean darkstyle=MainWindow.darkMode;
 	private double darken=0.3;
 	private Font fon= new Font("Arial",Font.BOLD,17);
 	
@@ -94,6 +95,9 @@ public class CButton  extends JButton{
 			
 			if(selected!=i) {
 				g2d.setColor(Color.LIGHT_GRAY);
+				if(darkstyle) {
+					g2d.setColor(Color.DARK_GRAY.darker());
+				}
 			}
 			else{
 				g2d.setColor(g2d.getColor());

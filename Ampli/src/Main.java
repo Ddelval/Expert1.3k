@@ -34,8 +34,10 @@ public class Main {
 	public static volatile StatusWord sw= new StatusWord();
 	public static UsbDevice findDevice(UsbHub hub, short vendorId, short productId)
 	{
+		System.out.println("here3");
 	    for (UsbDevice device : (List<UsbDevice>) hub.getAttachedUsbDevices())
 	    {
+	    	System.out.println("here");
 	        UsbDeviceDescriptor desc = device.getUsbDeviceDescriptor();
 	        if (desc.idVendor() == vendorId && desc.idProduct() == productId) return device;
 	        if (device.isUsbHub())
@@ -122,6 +124,7 @@ public class Main {
         	}
         	
         	//System.out.println(ss);
+        	//System.out.println(System.currentTimeMillis());
         	w.updateValues(ss);
         	synchronized(Main.sw) {
         		Main.sw.wait();

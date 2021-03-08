@@ -8,14 +8,17 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
+import javax.swing.Timer;
 
-public class CProgressBar extends JProgressBar {
+public class CProgressBar extends JProgressBar implements ActionListener{
 	private Font textFont;
 	private Font titleFont;
 	private Font valueFont;
@@ -23,17 +26,24 @@ public class CProgressBar extends JProgressBar {
 	private double min=0;
 	private double val=0;
 	private double tmpval=1;
+	private boolean hs=false;
 	private boolean smooth=true;
+	private boolean darkstyle=MainWindow.darkMode;
 	private Function<Double,Double> p=null;
+	private double target;
+	private double inc;
+	private int steps=8;
+	private int iter;
+	//Timer tim;
 	
 	public CProgressBar(int max) {
 		super();
 		textFont=new Font("Arial",Font.PLAIN,14);
 		this.max=max;
+		//tim=new Timer(8,this);
 	}
 	public CProgressBar() {
-		super();
-		textFont=new Font("Arial",Font.PLAIN,14);
+		this(100);
 	}
 	
 	@Override
@@ -46,6 +56,7 @@ public class CProgressBar extends JProgressBar {
 		g.setFont(textFont);
 		FontMetrics fm=g.getFontMetrics();
 		g2d.setColor(new Color(0,0,0));
+		if(darkstyle)g2d.setColor(Color.WHITE);
 		g2d.setFont(textFont);
 		
 		g2d.drawString(String.format("%.0f", min), 1, fm.getHeight());
@@ -87,22 +98,32 @@ public class CProgressBar extends JProgressBar {
 		
 		RoundRectangle2D rR = new RoundRectangle2D.Float(1, 20, (width-3), height-20, 7, 7);
 		g2d.setClip(rR);
+		if(darkstyle) {
+			g2d.setColor(Color.DARK_GRAY.darker());
+			g2d.fillRect(0, 0, width, height);
+		}
 		
 		g2d.setColor(res);
 		g2d.fillRect(1, 10, (int)(Math.round((width-1)*d)), height-10);
 		g2d.setClip(null);
 		g2d.setColor(new Color(150,150,150));
 		g2d.setStroke(new BasicStroke(2));
-		g2d.draw(rR);
+		if(darkstyle) {
+			
+		}
+		else {
+			g2d.draw(rR);
+		}
 		
 		for(int i=1;i<n;++i) {
+			if(darkstyle)g2d.setColor(Color.white);
 			g2d.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER, 10.0f, new float[]{2.0f, 1.0f}, 0.0f));
 			g2d.drawLine(i*width/n, 20, i*width/n, height);
 		}
 		
 		g2d.setFont(titleFont);
 		//g2d.fillRect(2, 21, (width-3), height-22);
-		
+
 		
 		
 	}
@@ -120,7 +141,8 @@ public class CProgressBar extends JProgressBar {
 		return max;
 	}
 	public void setVal(double val) {
-		//System.out.println("modified "+this.toString());
+		
+		//System.out.println("modified "+val);
 		if(smooth&&tmpval==-1) {
 			if(this.val!=0&&Math.abs(val-this.val)>this.max*0.1) {
 				tmpval=val;
@@ -131,17 +153,54 @@ public class CProgressBar extends JProgressBar {
 		else {
 			tmpval=-1;
 		}
-		
 		this.val=val;
+		target=val;
+		/*
+		synchronized(this) {
+		if(hs){
+			if(iter>0) {
+				steps--;
+				System.out.println("changed");
+			}
+			iter=0;
+			target=val;
+			inc=(target-this.val)/steps;
+			tim.restart();
+		}
+		else {
+			target=val;
+			t
+		}
+		
+		}*/
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		/*
+		synchronized(this){
+			if(iter==-1||iter>steps) {
+				System.out.println("rep: "+steps+" "+tim.getDelay());
+				tim.stop();
+				iter=-1;
+				return;
+			}
+			iter++;
+			this.val+=inc;
+			this.repaint(0);
+		}
+		*/
 		
 		
-		
+	}
+	public void setHighSpeed(boolean s) {
+		this.hs=s;
 	}
 	public void setFunction(Function<Double,Double> d) {
 		this.p=d;
 	}
 	public double getVal() {
-		return this.val;
+		return target;
 	}
 	public void setMin(double min) {
 		this.min=min;
@@ -149,5 +208,6 @@ public class CProgressBar extends JProgressBar {
 	public void setSmooth(boolean b) {
 		smooth=b;
 	}
+	
 
 }

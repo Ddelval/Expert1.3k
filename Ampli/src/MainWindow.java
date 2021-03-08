@@ -24,20 +24,19 @@ import javax.swing.plaf.basic.BasicProgressBarUI;
 public class MainWindow extends JFrame{
 	private CProgressBar[] lev_prog;
 	private JLabel[] lev_tit;
-	private JLabel[][] status;
 	private CButton[] options;
-	
+	public static boolean darkMode=true;
 	private long lastmax;
 	
 	public MainWindow() {
-		super();
+		super("Expert 1.3k Monitor");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel base= new JPanel(new GridBagLayout());
 		GridBagConstraints gbc= new GridBagConstraints();
 		gbc.fill=GridBagConstraints.BOTH;
 		gbc.insets=new Insets(10,10,0,10);
 		gbc.gridwidth=2;
-		base.add(formatTitle("Levels:"),gbc);
+		base.add(formatTitle("Levels"),gbc);
 		gbc.insets=new Insets(0,10,0,10);
 		gbc.weightx=1;
 		gbc.weighty=1;
@@ -57,33 +56,18 @@ public class MainWindow extends JFrame{
 		gbc.gridy=3;
 		gbc.weighty=0.5;
 		gbc.weightx=0.3;
-		gbc.insets=new Insets(0,10,0,10);
+		gbc.insets=new Insets(10,10,10,10);
 		base.add(informationGrid(),gbc);
 		gbc.gridx=1;
 		gbc.weightx=1;
-		
-
-		JPanel jp = new JPanel(new GridBagLayout());
-		GridBagConstraints g= new GridBagConstraints();
-		g.fill=GridBagConstraints.BOTH;
-		g.weightx=1;
-		g.gridy=0;
-		g.insets=new Insets(10,10,10,10);
-		
-		g.weighty=1;
-		g.insets=new Insets(10,0,0,10);
-		jp.add(leftGrid(),g);
-
-		
-		
-		base.add(jp,gbc);
+		base.add(leftGrid(),gbc);
 		
 		add(base);
 		setSize(750,700);
 		setLocationRelativeTo(null);
 		
 		setVisible(true);
-		
+		if(darkMode)base.setBackground(Color.DARK_GRAY);
 		lastmax=0;
 		
 	}
@@ -100,23 +84,17 @@ public class MainWindow extends JFrame{
 			options[2].setSelected(sw.powerLevel-1);
 			switch(sw.powerLevel) {
 				case 1:
-					status[6][1].setText("Low"); 
 					maxpower= 500;
 					break;
 				case 2:
-					status[6][1].setText("Medium");
 					maxpower= 1000;
 					break;
 				case 3:
-					status[6][1].setText("High");
 					maxpower= 1500;
 					break;
 			}
 		}
 		if(sw.operate!=null&&sw.operate.equals("Standby"))maxpower=200;
-		if(sw.temp!=-1) {
-			status[7][1].setText(Integer.toString(sw.temp)+" ºC");
-		}
 		
 		
 		
@@ -168,9 +146,14 @@ public class MainWindow extends JFrame{
 	
 	
 	private JLabel formatTitle(String s) {
-		JLabel jl = new JLabel(s);
+		JLabel jl = new JLabel(s + ":");
 		jl.setFont(new Font("Arial", Font.BOLD, 20));
 		jl.setHorizontalAlignment(SwingConstants.LEFT);
+		if(darkMode) {
+			jl.setBackground(Color.DARK_GRAY);
+			jl.setForeground(Color.white);
+		}
+		
 		return jl;
 	}
 	
@@ -178,20 +161,32 @@ public class MainWindow extends JFrame{
 		JLabel jl = new JLabel(s+":  ");
 		jl.setFont(new Font("Arial", Font.BOLD, 15));
 		jl.setHorizontalAlignment(SwingConstants.LEFT);
+		if(darkMode) {
+			jl.setBackground(Color.DARK_GRAY);
+			jl.setForeground(Color.white);
+		}
 		return jl;
 	}
 	
 	private JLabel formatRight(String s) {
 		JLabel jl = new JLabel(s);
 		jl.setFont(new Font("Arial", Font.PLAIN, 15));
+		if(darkMode) {
+			jl.setBackground(Color.DARK_GRAY);
+			jl.setForeground(Color.white);
+		}
 		return jl;
 	}
 	
 	private JLabel formatlevtit(String s) {
 		JLabel jl = new JLabel(s);
-		jl.setFont(new Font("Courier",Font.PLAIN, 20));
+		jl.setFont(new Font("Monaco",Font.PLAIN, 20));
 		jl.setVerticalAlignment(SwingConstants.BOTTOM);
 		jl.setHorizontalAlignment(SwingConstants.RIGHT);
+		if(darkMode) {
+			jl.setBackground(Color.DARK_GRAY);
+			jl.setForeground(Color.white);
+		}
 		return jl;
 	}
 	
@@ -200,6 +195,10 @@ public class MainWindow extends JFrame{
 		jl.setFont(new Font("Arial", Font.PLAIN, 15));
 		jl.setVerticalAlignment(SwingConstants.BOTTOM);
 		jl.setHorizontalAlignment(SwingConstants.RIGHT);
+		if(darkMode) {
+			jl.setBackground(Color.DARK_GRAY);
+			jl.setForeground(Color.white);
+		}
 		return jl;
 	}
 	private CProgressBar formatlevprog () {
@@ -216,6 +215,7 @@ public class MainWindow extends JFrame{
 		lt [0]= formatlevtit2("OP:");
 		lev_tit [0]= formatlevtit("    0 W");
 		lev_prog[0]= formatlevprog();
+		lev_prog[0].setHighSpeed(true);
 		lev_prog[0].setSmooth(false);
 		
 		lt [1]= formatlevtit2("POP:" );
@@ -228,13 +228,13 @@ public class MainWindow extends JFrame{
 		lev_prog[2]= formatlevprog();
 		lev_prog[2].setMax(50);
 		
-		lt [3]= formatlevtit2("SWR-TX:");
+		lt [3]= formatlevtit2("SWR➔TX:");
 		lev_tit [3]= formatlevtit(" 0.00  ");
 		lev_prog[3]= formatlevprog();
 		lev_prog[3].setMax(2);
 		lev_prog[3].setMin(1);
 		
-		lt [4]= formatlevtit2("SWR-ANT:");
+		lt [4]= formatlevtit2("SWR➔ANT:");
 		lev_tit [4]= formatlevtit(" 0.00  ");
 		lev_prog[4]= formatlevprog();
 		lev_prog[4].setMax(2);
@@ -269,37 +269,13 @@ public class MainWindow extends JFrame{
 			res.add(lev_tit[i],gb);
 		}
 		
+		if(darkMode)res.setBackground(Color.DARK_GRAY);
 		
 		return res;
 	}
 	
 	private JPanel informationGrid() {
 		JPanel res=new JPanel(new GridBagLayout());
-		status = new JLabel[8][2];
-		
-		status[0][0]=formatLeft("Mode");
-		status[0][1]=formatRight("Standby RX");
-		
-		status[1][0]=formatLeft("Memory bank");
-		status[1][1]=formatRight("1");
-		
-		status[2][0]=formatLeft("Input");
-		status[2][1]=formatRight("1");
-		
-		status[3][0]=formatLeft("Band");
-		status[3][1]=formatRight("160 m");
-		
-		status[4][0]=formatLeft("TX antenna");
-		status[4][1]=formatRight("1");
-		
-		status[5][0]=formatLeft("ATU status");
-		status[5][1]=formatRight("C");
-		
-		status[6][0]=formatLeft("Power Level");
-		status[6][1]=formatRight("Low");
-		
-		status[7][0]=formatLeft("Temperature");
-		status[7][1]=formatRight("25 ºC");
 		
 		JLabel[] tits;
 		tits= new JLabel[4];
@@ -352,7 +328,6 @@ public class MainWindow extends JFrame{
 		gb.gridwidth=2;
 		gb.gridx=0;
 		gb.gridy=0;
-		gb.insets=new Insets(5,0,5,0);
 		//gb.insets=new Insets(10,0,5,0);
 		//res.add(tits[0],gb);
 		//gb.gridy+=1;
@@ -376,33 +351,33 @@ public class MainWindow extends JFrame{
 		//gb.gridy+=1;
 		res.add(options[4],gb);
 		gb.gridy+=1;
-		
+		gb.insets=new Insets(0,0,0,0);
 		res.add(options[5],gb);
 		gb.gridy+=1;
 		
-		
+		if(darkMode)res.setBackground(Color.DARK_GRAY);
 		return res;
 	}
 	private JPanel leftGrid() {
-		JButton[][] but= new JButton[3][3];
+		ButtonStyled[][] but= new ButtonStyled[3][3];
 		
-		but[0][0]=new JButton ("Input");
+		but[0][0]=new ButtonStyled ("Input");
 		but[0][0].addActionListener(e->{Main.q.add((byte)0x01);});
-		but[0][1]=new JButton ("<- L");
+		but[0][1]=new ButtonStyled ("⬅  L");
 		but[0][1].addActionListener(e->{Main.q.add((byte)0x05);});
-		but[0][2]=new JButton ("L ->");
+		but[0][2]=new ButtonStyled ("L  ⮕");
 		but[0][2].addActionListener(e->{Main.q.add((byte)0x06);});
-		but[1][0]=new JButton ("Antenna");
+		but[1][0]=new ButtonStyled ("Antenna");
 		but[1][0].addActionListener(e->{Main.q.add((byte)0x04);});
-		but[1][1]=new JButton ("<- C");
+		but[1][1]=new ButtonStyled ("⬅  C");
 		but[1][1].addActionListener(e->{Main.q.add((byte)0x07);});
-		but[1][2]=new JButton ("C ->");
+		but[1][2]=new ButtonStyled ("C  ⮕");
 		but[1][2].addActionListener(e->{Main.q.add((byte)0x08);});
-		but[2][0]=new JButton ("<- Band");
+		but[2][0]=new ButtonStyled ("⬅  Band");
 		but[2][0].addActionListener(e->{Main.q.add((byte)0x02);});
-		but[2][1]=new JButton ("Band ->");
+		but[2][1]=new ButtonStyled ("Band  ⮕");
 		but[2][1].addActionListener(e->{Main.q.add((byte)0x03);});
-		but[2][2]=new JButton ("Tune");
+		but[2][2]=new ButtonStyled ("Tune");
 		but[2][2].addActionListener(e->{Main.q.add((byte)0x09);});
 		
 		JPanel jp= new JPanel(new GridLayout(6,3,5,5));
@@ -417,24 +392,24 @@ public class MainWindow extends JFrame{
 		
 		JComponent[][] but2= new JComponent[3][3];
 		
-		but2[0][0]=new JButton ("<--");
-		((JButton)but2[0][0]).addActionListener(e->{Main.q.add((byte)0x0F);});
-		but2[0][1]=new JButton ("-->");
-		((JButton)but2[0][1]).addActionListener(e->{Main.q.add((byte)0x10);});
+		but2[0][0]=new ButtonStyled ("⬅   ⬆");
+		((ButtonStyled)but2[0][0]).addActionListener(e->{Main.q.add((byte)0x0F);});
+		but2[0][1]=new ButtonStyled ("⬇   ⮕");
+		((ButtonStyled)but2[0][1]).addActionListener(e->{Main.q.add((byte)0x10);});
 		but2[0][2]=new JLabel("");
 
-		but2[1][0]=new JButton ("Cat");
-		((JButton)but2[1][0]).addActionListener(e->{Main.q.add((byte)0x0E);});
-		but2[1][1]=new JButton ("Display");
-		((JButton)but2[1][1]).addActionListener(e->{Main.q.add((byte)0x0C);});
-		but2[1][2]=new JButton ("OFF");
-		((JButton)but2[1][2]).addActionListener(e->{Main.q.add((byte)0x0A);});
-		but2[2][0]=new JButton ("Set");
-		((JButton)but2[2][0]).addActionListener(e->{Main.q.add((byte)0x11);});
-		but2[2][1]=new JButton ("Power");
-		((JButton)but2[2][1]).addActionListener(e->{Main.q.add((byte)0x0B);});
-		but2[2][2]=new JButton ("Operate");
-		((JButton)but2[2][2]).addActionListener(e->{Main.q.add((byte)0x0D);});
+		but2[1][0]=new ButtonStyled ("Cat");
+		((ButtonStyled)but2[1][0]).addActionListener(e->{Main.q.add((byte)0x0E);});
+		but2[1][1]=new ButtonStyled ("Display");
+		((ButtonStyled)but2[1][1]).addActionListener(e->{Main.q.add((byte)0x0C);});
+		but2[1][2]=new ButtonStyled ("OFF");
+		((ButtonStyled)but2[1][2]).addActionListener(e->{Main.q.add((byte)0x0A);});
+		but2[2][0]=new ButtonStyled ("Set");
+		((ButtonStyled)but2[2][0]).addActionListener(e->{Main.q.add((byte)0x11);});
+		but2[2][1]=new ButtonStyled ("Power");
+		((ButtonStyled)but2[2][1]).addActionListener(e->{Main.q.add((byte)0x0B);});
+		but2[2][2]=new ButtonStyled ("Operate");
+		((ButtonStyled)but2[2][2]).addActionListener(e->{Main.q.add((byte)0x0D);});
 		
 		
 		for(int i=0;i<3;++i) {
@@ -442,6 +417,8 @@ public class MainWindow extends JFrame{
 				jp.add(but2[i][j]);
 			}
 		}
+		
+		if(darkMode)jp.setBackground(Color.DARK_GRAY);
 		return jp;
 	}
 	

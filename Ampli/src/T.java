@@ -11,7 +11,7 @@ import javax.swing.SwingUtilities;
 
 public class T extends JFrame {
 	public CProgressBar p;
-    public T() {
+    public T() throws InterruptedException {
         super();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //this.setLayout(null);
@@ -19,19 +19,10 @@ public class T extends JFrame {
         JPanel jp= new JPanel();
         jp.setLayout(new GridBagLayout());
         GridBagConstraints g= new GridBagConstraints();
-        p = new CProgressBar(2);
-        p.setFunction(x->{
-        	if(x<0.5) {
-        		return 2*x;
-        	}
-        	if(x<1) {
-        		return 1.5*(x-0.5)+1;
-        	}
-        	else return x+1.75;
-        });
-        p.setBounds(15, 15, 300, 15);
-        p.setSmooth(false);
-        p.setVal(1.5);
+        p = new CProgressBar(50);
+        p.setBackground(Color.DARK_GRAY);
+        p.setForeground(Color.WHITE);
+        p.setVal(50);
         g.weightx=1;
         g.insets= new Insets(10,10,10,10);
         g.fill=GridBagConstraints.BOTH;
@@ -41,13 +32,21 @@ public class T extends JFrame {
         
         this.setVisible(true);
         
+        
+        
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         T d=new T();
-        
-
+        d.p.setSmooth(false);
+        d.p.setVal(10);
+        Thread.sleep(1000);
+        System.out.println(40);
+        d.p.setVal(40);
+        Thread.sleep(1000);
+        d.p.setVal(5);
+        Thread.sleep(1000);
             
     }
 }
